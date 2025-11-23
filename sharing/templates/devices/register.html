@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Register Device - WiFi Network Sharing{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1 class="page-title">
+            <i class="fas fa-mobile-alt"></i> Register New Device
+        </h1>
+        
+        <div class="card">
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.device_name.id_for_label }}" class="form-label">Device Name</label>
+                        {{ form.device_name }}
+                        {% if form.device_name.errors %}
+                            <div class="invalid-feedback" style="display: block;">
+                                {{ form.device_name.errors|first }}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">e.g., My Laptop, iPhone, iPad</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.device_type.id_for_label }}" class="form-label">Device Type</label>
+                        {{ form.device_type }}
+                        {% if form.device_type.errors %}
+                            <div class="invalid-feedback" style="display: block;">
+                                {{ form.device_type.errors|first }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.mac_address.id_for_label }}" class="form-label">MAC Address *</label>
+                        {{ form.mac_address }}
+                        {% if form.mac_address.errors %}
+                            <div class="invalid-feedback" style="display: block;">
+                                {{ form.mac_address.errors|first }}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">Format: XX:XX:XX:XX:XX:XX (required)</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.ip_address.id_for_label }}" class="form-label">IP Address</label>
+                        {{ form.ip_address }}
+                        {% if form.ip_address.errors %}
+                            <div class="invalid-feedback" style="display: block;">
+                                {{ form.ip_address.errors|first }}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">Optional: e.g., 192.168.1.100</small>
+                    </div>
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Register Device
+                        </button>
+                        <a href="{% url 'filesharing:devices-list' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i> How to Find MAC Address
+            </div>
+            <div class="card-body">
+                <h6 class="mb-3"><strong>Windows:</strong></h6>
+                <ol class="mb-3">
+                    <li>Open Command Prompt</li>
+                    <li>Type: <code>ipconfig /all</code></li>
+                    <li>Look for "Physical Address"</li>
+                </ol>
+                
+                <h6 class="mb-3"><strong>macOS/Linux:</strong></h6>
+                <ol class="mb-3">
+                    <li>Open Terminal</li>
+                    <li>Type: <code>ifconfig</code></li>
+                    <li>Look for "HWaddr" or "ether"</li>
+                </ol>
+                
+                <h6 class="mb-3"><strong>iPhone/iPad:</strong></h6>
+                <ol class="mb-3">
+                    <li>Settings → General → About</li>
+                    <li>Look for "WiFi Address"</li>
+                </ol>
+                
+                <h6><strong>Android:</strong></h6>
+                <ol>
+                    <li>Settings → About phone → Status</li>
+                    <li>Look for "WiFi MAC Address"</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

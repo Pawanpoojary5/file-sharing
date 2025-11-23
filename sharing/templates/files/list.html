@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-main">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-file"></i> My Files</h2>
+        <a href="{% url 'filesharing:file-upload' %}" class="btn btn-primary">
+            <i class="fas fa-cloud-upload-alt"></i> Upload File
+        </a>
+    </div>
+
+    {% if page_obj %}
+        <div class="row mb-4">
+            <div class="col-md-9">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> 
+                    You have <strong>{{ total_files }}</strong> files uploaded and <strong>{{ shared_count }}</strong> files shared with you
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            {% for file in files %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100" style="border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <!-- File Icon/Preview -->
+                        {% if file.file_type == 'image' %}
+                            <img src="{{ file.file.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white;">
+                                <i class="fas {{ file.get_file_icon }}" style="font-size: 4rem;"></i>
+                            </div>
+                        {% endif %}
+
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate" title="{{ file.filename }}">
+                                <i class="fas {{ file.get_file_icon }}"></i> {{ file.filename|truncatechars:30 }}
+                            </h5>
+                            <p class="card-text text-muted small">
+                                <i class="fas fa-database"></i> {{ file.get_display_size }}<br>
+                                <i class="fas fa-calendar"></i> {{ file.created_at|date:"M d, Y" }}<br>
+                                <i class="fas fa-download"></i> {{ file.download_count }} downloads
+                            </p>
+
+                            <!-- Share Status -->
+                            {% if file.shares.all %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-share"></i> {{ file.shares.count }} shared
+                                </span>
+                            {% endif %}
+                            {% if file.is_public %}
+                                <span class="badge bg-info">
+                                    <i class="fas fa-globe"></i> Public
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="card-footer bg-white border-top">
+                            <a href="{% url 'filesharing:file-detail' file.id %}" class="btn btn-sm btn-outline-primary btn-block mb-2">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a href="{% url 'filesharing:file-download' file.id %}" class="btn btn-sm btn-outline-success" target="_blank">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteFile({{ file.id }})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+            <nav class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-warning text-center">
+            <i class="fas fa-inbox"></i> No files yet. 
+            <a href="{% url 'filesharing:file-upload' %}" class="alert-link">Upload your first file</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function deleteFile(fileId) {
+    if (confirm('Are you sure you want to delete this file?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/files/${fileId}/delete/`;
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+            form.appendChild(csrfToken.cloneNode());
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+{% endblock %}

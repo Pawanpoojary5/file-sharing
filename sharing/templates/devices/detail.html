@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ device.device_name }} - WiFi Network Sharing{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="page-title">
+        <i class="fas fa-mobile-alt"></i> {{ device.device_name }}
+    </h1>
+    <div>
+        <a href="{% url 'filesharing:device-edit' device.pk %}" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <form method="post" action="{% url 'filesharing:device-delete' device.pk %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this device?')">
+                <i class="fas fa-trash"></i> Delete
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i> Device Information
+            </div>
+            <div class="card-body">
+                <p class="mb-3">
+                    <strong>Device Type:</strong><br>
+                    <span class="badge bg-info">{{ device.get_device_type_display }}</span>
+                </p>
+                <p class="mb-3">
+                    <strong>Status:</strong><br>
+                    {% if device.is_online %}
+                        <span class="badge badge-success">
+                            <i class="fas fa-circle"></i> Online
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary">
+                            <i class="fas fa-circle"></i> Offline
+                        </span>
+                    {% endif %}
+                </p>
+                <p class="mb-3">
+                    <strong>MAC Address:</strong><br>
+                    <code>{{ device.mac_address }}</code>
+                </p>
+                {% if device.ip_address %}
+                    <p class="mb-3">
+                        <strong>IP Address:</strong><br>
+                        <code>{{ device.ip_address }}</code>
+                    </p>
+                {% endif %}
+                <p>
+                    <strong>Last Seen:</strong><br>
+                    {{ device.last_seen|date:"M d, Y H:i" }}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-network-wired"></i> Connected Networks
+            </div>
+            <div class="card-body">
+                {% if connections %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Network</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for connection in connections %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'filesharing:network-detail' connection.network.pk %}">
+                                                {{ connection.network.network_name }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {% if connection.is_connected %}
+                                                <span class="badge badge-success">Connected</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Disconnected</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">
+                        <i class="fas fa-wifi"></i><br>
+                        No networks connected
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

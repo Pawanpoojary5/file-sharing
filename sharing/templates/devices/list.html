@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}My Devices - WiFi Network Sharing{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="page-title">
+        <i class="fas fa-mobile-alt"></i> My Devices
+    </h1>
+    <a href="{% url 'filesharing:register-device' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Register New Device
+    </a>
+</div>
+
+{% if devices %}
+    <div class="row">
+        {% for device in devices %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="card-title">{{ device.device_name }}</h5>
+                                <p class="text-muted mb-0">
+                                    <i class="fas fa-{{ device.device_type }}"></i>
+                                    {{ device.get_device_type_display }}
+                                </p>
+                            </div>
+                            {% if device.is_online %}
+                                <span class="badge badge-success">
+                                    <i class="fas fa-circle"></i> Online
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-circle"></i> Offline
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="device-info mb-3">
+                            <p class="small mb-2">
+                                <strong>MAC Address:</strong><br>
+                                <code>{{ device.mac_address }}</code>
+                            </p>
+                            {% if device.ip_address %}
+                                <p class="small mb-2">
+                                    <strong>IP Address:</strong><br>
+                                    <code>{{ device.ip_address }}</code>
+                                </p>
+                            {% endif %}
+                            <p class="small">
+                                <strong>Last Seen:</strong><br>
+                                {{ device.last_seen|date:"M d, Y H:i" }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light">
+                        <a href="{% url 'filesharing:device-detail' device.pk %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <a href="{% url 'filesharing:device-edit' device.pk %}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <form method="post" action="{% url 'filesharing:device-delete' device.pk %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this device?')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <i class="fas fa-mobile-alt"></i>
+        </div>
+        <div class="empty-state-title">No Devices Registered</div>
+        <p class="empty-state-text">Register your first device to start managing WiFi networks</p>
+        <a href="{% url 'filesharing:register-device' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-plus"></i> Register Your First Device
+        </a>
+    </div>
+{% endif %}
+
+{% endblock %}

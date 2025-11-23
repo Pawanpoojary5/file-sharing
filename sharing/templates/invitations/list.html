@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Invitations - WiFi{% endblock %}
+{% block content %}
+<h1 class="page-title"><i class="fas fa-envelope"></i> Network Invitations</h1>
+{% if pending_invitations %}
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Network</th>
+                <th>From</th>
+                <th>Expires</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for invitation in pending_invitations %}
+            <tr>
+                <td><strong>{{ invitation.network.network_name }}</strong></td>
+                <td>{{ invitation.invited_by.first_name|default:invitation.invited_by.username }}</td>
+                <td>{{ invitation.expires_at|date:"M d, Y" }}</td>
+                <td>
+                    <a href="{% url 'filesharing:accept-invitation' invitation.pk %}" class="btn btn-sm btn-success"><i class="fas fa-check"></i> Accept</a>
+                    <a href="{% url 'filesharing:reject-invitation' invitation.pk %}" class="btn btn-sm btn-danger"><i class="fas fa-times"></i> Reject</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon"><i class="fas fa-envelope"></i></div>
+    <div class="empty-state-title">No Pending Invitations</div>
+    <p class="empty-state-text">You don't have any pending network invitations</p>
+</div>
+{% endif %}
+{% endblock %}

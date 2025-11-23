@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Shared Networks - WiFi{% endblock %}
+{% block content %}
+<h1 class="page-title"><i class="fas fa-share-alt"></i> Networks Shared With Me</h1>
+{% if shares %}
+<div class="row">
+    {% for share in shares %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ share.network.network_name }}</h5>
+                <p class="text-muted"><strong>Shared by:</strong> {{ share.network.owner.first_name|default:share.network.owner.username }}</p>
+                <p class="small"><strong>Permission:</strong> <span class="badge bg-info">{{ share.get_permission_level_display }}</span></p>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'filesharing:network-detail' share.network.pk %}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i> View</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon"><i class="fas fa-share-alt"></i></div>
+    <div class="empty-state-title">No Networks Shared Yet</div>
+    <p class="empty-state-text">Ask others to share their networks with you</p>
+</div>
+{% endif %}
+{% endblock %}

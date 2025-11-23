@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-main">
+    <h2><i class="fas fa-cloud-upload-alt"></i> Upload File</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- File Input -->
+                        <div class="mb-4">
+                            <label class="form-label"><i class="fas fa-file"></i> Select File</label>
+                            <div class="upload-area" style="border: 2px dashed #667eea; border-radius: 8px; padding: 40px; text-align: center; background: #f8f9ff; cursor: pointer; transition: all 0.3s;">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: #667eea; margin-bottom: 10px; display: block;"></i>
+                                <p>Drag and drop your file here or click to browse</p>
+                                {{ form.file }}
+                            </div>
+                            <small class="form-text text-muted">Max file size: 500MB. All file types supported.</small>
+                            {% if form.file.errors %}
+                                <div class="alert alert-danger mt-2">{{ form.file.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Public Switch -->
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                {{ form.is_public }}
+                                <label class="form-check-label">
+                                    {{ form.is_public.label }}
+                                </label>
+                            </div>
+                            <small class="form-text text-muted">If enabled, anyone with the link can view this file</small>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-check-circle"></i> Upload File
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Sidebar -->
+        <div class="col-md-4">
+            <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                <div class="card-body">
+                    <h5 class="card-title">Upload Tips</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check"></i> All file types are supported</li>
+                        <li class="mb-2"><i class="fas fa-check"></i> Maximum 500MB per file</li>
+                        <li class="mb-2"><i class="fas fa-check"></i> Files are encrypted</li>
+                        <li class="mb-2"><i class="fas fa-check"></i> Share with custom permissions</li>
+                        <li class="mb-2"><i class="fas fa-check"></i> Set expiry dates on shares</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Supported Formats</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-primary">Images</span>
+                        <span class="badge bg-success">Documents</span>
+                        <span class="badge bg-warning">Videos</span>
+                        <span class="badge bg-info">Audio</span>
+                        <span class="badge bg-danger">Archives</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .upload-area {
+        transition: all 0.3s;
+    }
+
+    .upload-area:hover {
+        background-color: #eef2ff;
+        border-color: #764ba2;
+    }
+
+    .upload-area input[type="file"] {
+        display: none;
+    }
+</style>
+
+<script>
+    // Drag and drop functionality
+    const uploadArea = document.querySelector('.upload-area');
+    const fileInput = document.querySelector('input[type="file"]');
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.backgroundColor = '#eef2ff';
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.backgroundColor = '#f8f9ff';
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.backgroundColor = '#f8f9ff';
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+        }
+    });
+</script>
+{% endblock %}

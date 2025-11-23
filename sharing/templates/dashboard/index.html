@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - WiFi Network Sharing{% endblock %}
+
+{% block content %}
+<h1 class="page-title">
+    <i class="fas fa-th-large"></i> Dashboard
+</h1>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body stats-card">
+                <div class="stats-number">{{ devices_count }}</div>
+                <div class="stats-label">
+                    <i class="fas fa-mobile-alt"></i> Registered Devices
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body stats-card">
+                <div class="stats-number">{{ networks_count }}</div>
+                <div class="stats-label">
+                    <i class="fas fa-wifi"></i> WiFi Networks
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body stats-card">
+                <div class="stats-number">{{ active_connections }}</div>
+                <div class="stats-label">
+                    <i class="fas fa-plug"></i> Active Connections
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card">
+            <div class="card-body stats-card">
+                <div class="stats-number">{{ pending_invitations }}</div>
+                <div class="stats-label">
+                    <i class="fas fa-envelope"></i> Pending Invites
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Networks -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-wifi"></i> Recent Networks
+            </div>
+            <div class="card-body">
+                {% if recent_networks %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Network Name</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for network in recent_networks %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ network.network_name }}</strong><br>
+                                            <small class="text-muted">{{ network.security_type|upper }}</small>
+                                        </td>
+                                        <td>
+                                            {% if network.is_active %}
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-check-circle"></i> Active
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-times-circle"></i> Inactive
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'filesharing:network-detail' network.pk %}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <div class="empty-state-title">No Networks Yet</div>
+                        <p class="empty-state-text">Create your first WiFi network to get started</p>
+                        <a href="{% url 'filesharing:network-create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Create Network
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Devices -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-mobile-alt"></i> Recent Devices
+            </div>
+            <div class="card-body">
+                {% if recent_devices %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Device Name</th>
+                                    <th>Type</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for device in recent_devices %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ device.device_name }}</strong><br>
+                                            <small class="text-muted">{{ device.mac_address }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">
+                                                {{ device.get_device_type_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'filesharing:device-detail' device.pk %}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="empty-state-title">No Devices Registered</div>
+                        <p class="empty-state-text">Register your first device to start managing networks</p>
+                        <a href="{% url 'filesharing:register-device' %}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Register Device
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pending Invitations -->
+{% if pending_invitations_list %}
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-envelope"></i> Pending Invitations ({{ pending_invitations }})
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Network</th>
+                                    <th>From</th>
+                                    <th>Expires</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for invitation in pending_invitations_list %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ invitation.network.network_name }}</strong>
+                                        </td>
+                                        <td>{{ invitation.invited_by.first_name|default:invitation.invited_by.username }}</td>
+                                        <td>
+                                            <small>{{ invitation.expires_at|date:"M d, Y" }}</small>
+                                        </td>
+                                        <td>
+                                            <form method="post" style="display: inline;">
+                                                {% csrf_token %}
+                                                <a href="{% url 'filesharing:accept-invitation' invitation.pk %}" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-check"></i> Accept
+                                                </a>
+                                                <a href="{% url 'filesharing:reject-invitation' invitation.pk %}" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-times"></i> Reject
+                                                </a>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

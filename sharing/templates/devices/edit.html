@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Device - WiFi Network Sharing{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1 class="page-title">
+            <i class="fas fa-edit"></i> Edit Device - {{ device.device_name }}
+        </h1>
+        
+        <div class="card">
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.device_name.id_for_label }}" class="form-label">Device Name</label>
+                        {{ form.device_name }}
+                        {% if form.device_name.errors %}
+                            <div class="invalid-feedback" style="display: block;">
+                                {{ form.device_name.errors|first }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.device_type.id_for_label }}" class="form-label">Device Type</label>
+                        {{ form.device_type }}
+                        {% if form.device_type.errors %}
+                            <div class="invalid-feedback" style="display: block;">
+                                {{ form.device_type.errors|first }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.ip_address.id_for_label }}" class="form-label">IP Address</label>
+                        {{ form.ip_address }}
+                        {% if form.ip_address.errors %}
+                            <div class="invalid-feedback" style="display: block;">
+                                {{ form.ip_address.errors|first }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <a href="{% url 'filesharing:device-detail' device.pk %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

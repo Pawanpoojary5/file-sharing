@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-main mt-0">
+    <!-- Hero Section -->
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 80px 20px; text-align: center; border-radius: 0;">
+        <h1 class="mb-3" style="font-size: 3.5rem; font-weight: 700;">Secure File Sharing Made Easy</h1>
+        <p class="mb-4" style="font-size: 1.25rem; opacity: 0.9;">Share files instantly with your friends and colleagues</p>
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'filesharing:file-upload' %}" class="btn btn-light btn-lg" style="padding: 12px 40px; font-weight: 600;">
+                <i class="fas fa-cloud-upload-alt"></i> Start Uploading
+            </a>
+        {% else %}
+            <div class="mt-4">
+                <a href="{% url 'filesharing:signup' %}" class="btn btn-light btn-lg me-3" style="padding: 12px 40px; font-weight: 600;">
+                    <i class="fas fa-user-plus"></i> Sign Up Free
+                </a>
+                <a href="{% url 'filesharing:login' %}" class="btn btn-outline-light btn-lg" style="padding: 12px 40px; font-weight: 600;">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Features Section -->
+    <div class="container my-5">
+        <h2 class="text-center mb-5" style="font-size: 2.5rem; font-weight: 700;">Why Choose FileShare?</h2>
+        
+        <div class="row g-4">
+            <!-- Feature 1 -->
+            <div class="col-md-4">
+                <div class="card text-center h-100" style="border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div class="card-body p-4">
+                        <i class="fas fa-lock" style="font-size: 3rem; color: #667eea; margin-bottom: 20px;"></i>
+                        <h5 class="card-title">Secure</h5>
+                        <p class="card-text text-muted">All files are encrypted and protected with advanced security measures.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="col-md-4">
+                <div class="card text-center h-100" style="border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div class="card-body p-4">
+                        <i class="fas fa-bolt" style="font-size: 3rem; color: #06b6d4; margin-bottom: 20px;"></i>
+                        <h5 class="card-title">Fast</h5>
+                        <p class="card-text text-muted">Lightning-fast uploads and downloads with optimized performance.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="col-md-4">
+                <div class="card text-center h-100" style="border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div class="card-body p-4">
+                        <i class="fas fa-share-alt" style="font-size: 3rem; color: #f59e0b; margin-bottom: 20px;"></i>
+                        <h5 class="card-title">Easy Sharing</h5>
+                        <p class="card-text text-muted">Share files with custom permissions and expiry dates.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-4">
+            <!-- Feature 4 -->
+            <div class="col-md-4">
+                <div class="card text-center h-100" style="border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div class="card-body p-4">
+                        <i class="fas fa-images" style="font-size: 3rem; color: #ec4899; margin-bottom: 20px;"></i>
+                        <h5 class="card-title">Preview</h5>
+                        <p class="card-text text-muted">Preview images and documents without downloading.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="col-md-4">
+                <div class="card text-center h-100" style="border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div class="card-body p-4">
+                        <i class="fas fa-comments" style="font-size: 3rem; color: #8b5cf6; margin-bottom: 20px;"></i>
+                        <h5 class="card-title">Collaborate</h5>
+                        <p class="card-text text-muted">Comment on files and track sharing activity.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="col-md-4">
+                <div class="card text-center h-100" style="border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div class="card-body p-4">
+                        <i class="fas fa-mobile-alt" style="font-size: 3rem; color: #10b981; margin-bottom: 20px;"></i>
+                        <h5 class="card-title">Mobile Ready</h5>
+                        <p class="card-text text-muted">Access your files from any device, anywhere, anytime.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 20px; text-align: center; border-radius: 10px; margin: 40px 0;">
+        <h2 class="mb-4">Ready to Get Started?</h2>
+        <p class="mb-4" style="font-size: 1.1rem;">Join thousands of users sharing files securely</p>
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'filesharing:file-upload' %}" class="btn btn-light btn-lg" style="padding: 12px 40px; font-weight: 600;">
+                <i class="fas fa-arrow-right"></i> Upload Your First File
+            </a>
+        {% else %}
+            <a href="{% url 'filesharing:signup' %}" class="btn btn-light btn-lg" style="padding: 12px 40px; font-weight: 600;">
+                <i class="fas fa-arrow-right"></i> Create Account
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Stats Section -->
+    <div class="container my-5">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <h3 class="text-primary" style="font-size: 2.5rem; font-weight: 700;">10K+</h3>
+                <p class="text-muted">Active Users</p>
+            </div>
+            <div class="col-md-3">
+                <h3 class="text-primary" style="font-size: 2.5rem; font-weight: 700;">1M+</h3>
+                <p class="text-muted">Files Shared</p>
+            </div>
+            <div class="col-md-3">
+                <h3 class="text-primary" style="font-size: 2.5rem; font-weight: 700;">99.9%</h3>
+                <p class="text-muted">Uptime</p>
+            </div>
+            <div class="col-md-3">
+                <h3 class="text-primary" style="font-size: 2.5rem; font-weight: 700;">24/7</h3>
+                <p class="text-muted">Support</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container-main {
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}
